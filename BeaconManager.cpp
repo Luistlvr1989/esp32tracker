@@ -5,7 +5,11 @@ BLEDevicesListener::BLEDevicesListener(AdvertisedBeaconCallbacks* listener) {
 }
 
 void BLEDevicesListener::onResult(BLEAdvertisedDevice advertisedDevice) {
-  listener->onResult(advertisedDevice);
+  std::string data = advertisedDevice.getManufacturerData();
+
+  if (advertisedDevice.haveManufacturerData()) {
+    listener->onResult(advertisedDevice);
+  }
 }
 
 void BeaconManager::begin(AdvertisedBeaconCallbacks* listener) {

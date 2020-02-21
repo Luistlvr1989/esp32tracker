@@ -10,9 +10,17 @@ const char* password = "29252217";
 
 const int durationInSeconds = 5;
 
+const char* mqtt_server = "hornet.rmq.cloudamqp.com";
+const int mqtt_port = 1883;
+const char* mqtt_user = "znuhuljz:znuhuljz";
+const char* mqtt_password = "iA1pLdUFq6MD_gOmqLQWDgrA4iUOshUx";
+const char* mqtt_publish_ch = "/tracker/beacon/packet"
+
 class BeaconsListener: public AdvertisedBeaconCallbacks {
     void onResult(BLEAdvertisedDevice advertisedDevice) {
       Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
+
+      Serial.println(advertisedDevice.getRSSI());
     }
 };
 

@@ -5,12 +5,13 @@
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
+#include <esp_log.h>
 
 #define INTERVAL 100
 #define WINDOW 99
 
 struct AdvertisedBeaconCallbacks {
-  virtual void onResult(BLEAdvertisedDevice advertisedDevice);
+  virtual void onResult(char* packet);
 };
 
 class BeaconManager {

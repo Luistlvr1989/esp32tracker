@@ -5,10 +5,13 @@ BLEDevicesListener::BLEDevicesListener(AdvertisedBeaconCallbacks* listener) {
 }
 
 void BLEDevicesListener::onResult(BLEAdvertisedDevice advertisedDevice) {
-  std::string data = advertisedDevice.getManufacturerData();
-
   if (advertisedDevice.haveManufacturerData()) {
-    listener->onResult(advertisedDevice);
+    std::string manufacturerData = advertisedDevice.getManufacturerData();
+    int length = manufacturerData.length();
+    
+    char* packet = BLEUtils::buildHexData(nullptr, (uint8_t*) manufacturerData.data(), length);
+    listener->onResult(packet);
+    free(packet);
   }
 }
 

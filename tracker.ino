@@ -1,26 +1,26 @@
 #include "WiFiManager.h"
 #include "BeaconManager.h"
+#include "MQTTManager.h"
 
-/*const char* ssid = "Belatrix Globant Division";
-const char* identity = "ltalavera";
-const char* password = "4I6goj8X!!";*/
+/*const char* WIFI_SSID = "Belatrix Globant Division";
+const char* WIFI_IDENTITY = "ltalavera";
+const char* WIFI_PASSWORD = "4I6goj8X!!";*/
 
-const char* ssid = "TALAVERA";
-const char* password = "29252217";
+const char* WIFI_SSID = "TALAVERA";
+const char* WIFI_PASSWORD = "29252217";
 
 const int durationInSeconds = 5;
 
-const char* mqtt_server = "hornet.rmq.cloudamqp.com";
-const int mqtt_port = 1883;
-const char* mqtt_user = "znuhuljz:znuhuljz";
-const char* mqtt_password = "iA1pLdUFq6MD_gOmqLQWDgrA4iUOshUx";
-const char* mqtt_publish_ch = "/tracker/beacon/packet"
+const char* MQTT_SERVER = "hornet.rmq.cloudamqp.com";
+const int MQTT_PORT = 1883;
+const char* MQTT_USER = "znuhuljz:znuhuljz";
+const char* MQTT_PASSWORD = "iA1pLdUFq6MD_gOmqLQWDgrA4iUOshUx";
+const char* MQTT_PUBLISH_CH = "/tracker/beacon/packet";
 
 class BeaconsListener: public AdvertisedBeaconCallbacks {
-    void onResult(BLEAdvertisedDevice advertisedDevice) {
-      Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
-
-      Serial.println(advertisedDevice.getRSSI());
+    void onResult(char* packet) {
+      Serial.printf("Advertised Package: %s \n", packet);
+      mqttManager.publish(MQTT_PUBLISH_CH, packet);
     }
 };
 
@@ -29,133 +29,18 @@ void setup() {
   while (!Serial);
 
   wifiManager.begin();
-  //wifiManager.connectEnterprise(ssid, identity, password);
-  wifiManager.connect(ssid, password);
+  //wifiManager.connectEnterprise(WIFI_SSID, WIFI_IDENTITY, WIFI_PASSWORD);
+  wifiManager.connect(WIFI_SSID, WIFI_PASSWORD);
+
+  mqttManager.begin(MQTT_SERVER, MQTT_PORT);
+  mqttManager.connect(MQTT_USER, MQTT_PASSWORD);
 
   beaconManager.begin(new BeaconsListener());
 }
 
 void loop() {
+  mqttManager.loop();
+  
   beaconManager.scan(durationInSeconds);
   delay(2000);
 }
-
-
-
-
-
-/*#include <BLEDevice.h>
-#include <BLEUtils.h>
-#include <BLEScan.h>
-#include <BLEAdvertisedDevice.h>
-#include "BLEBeacon.h"
-
-#define SCAN_TIME_IN_SECONDS 5
-#define DELAY_SCAN_IN_SECONDS 10
-
-uint16_t beconUUID = 0x4c00;
-
-BLEScan* pBLEScan;
-
-class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
-    void onResult(BLEAdvertisedDevice advertisedDevice) {
-      Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
-      
-      if (advertisedDevice.haveManufacturerData()) {
-        char *pHex = BLEUtils::buildHexData(nullptr, (uint8_t*)advertisedDevice.getManufacturerData().data(), advertisedDevice.getManufacturerData().length());
-        Serial.println(pHex);
-        free(pHex);
-      }
-    }
-};
-*/
-/*
-#include <WiFi.h>
-#include <PubSubClient.h>
-
-const char* SSID = "TALAVERA";
-const char* PASSWORD = "29252217";
-
-const char* mqtt_server = "hornet.rmq.cloudamqp.com";
-#define mqtt_port 1883
-#define MQTT_USER "znuhuljz:znuhuljz"
-#define MQTT_PASSWORD "iA1pLdUFq6MD_gOmqLQWDgrA4iUOshUx"
-#define MQTT_SERIAL_PUBLISH_CH "/icircuit/ESP32/serialdata/tx"
-#define MQTT_SERIAL_RECEIVER_CH "/icircuit/ESP32/serialdata/rx"
-
-WiFiClient wifiClient;
-PubSubClient client(wifiClient);
-
-void reconnect() {
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    String clientId = "ESP32Client-";
-    clientId += String(random(0xffff), HEX);
- 
-    if (client.connect(clientId.c_str(),MQTT_USER,MQTT_PASSWORD)) {
-      Serial.println("connected");
-      client.publish("/icircuit/presence/ESP32/", "hello world");
-      client.subscribe(MQTT_SERIAL_RECEIVER_CH);
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      delay(5000);
-    }
-  }
-}
-
-void callback(char* topic, byte *payload, unsigned int length) {
-    Serial.println("-------new message from broker-----");
-    Serial.print("channel:");
-    Serial.println(topic);
-    Serial.print("data:");  
-    Serial.write(payload, length);
-    Serial.println();
-}
-
-void setup() {
-  Serial.begin(9600);
-
-  scanNetworks();
-  connectToNetwork();
-
-  Serial.println(WiFi.macAddress());
-  Serial.println(WiFi.localIP());
-  
-  client.setServer(mqtt_server, mqtt_port);
-  client.setCallback(callback);
-  reconnect();
-
-  BLEDevice::init("");
-  pBLEScan = BLEDevice::getScan(); 
-  pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  pBLEScan->setActiveScan(true); 
-  pBLEScan->setInterval(100);
-  pBLEScan->setWindow(99);  
-}
-
-void publishSerialData(char *serialData){
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.publish(MQTT_SERIAL_PUBLISH_CH, serialData);
-}
-
-void loop() {
-  client.loop();
-  
-  if (Serial.available() > 0) {
-     char mun[501];
-     memset(mun,0, 501);
-     Serial.readBytesUntil( '\n',mun,500);
-     publishSerialData(mun);
-   }
-  
-  BLEScanResults foundDevices = pBLEScan->start(SCAN_TIME_IN_SECONDS, false);
-  Serial.print("Devices found: ");
-  Serial.println(foundDevices.getCount());
-  Serial.println("Scan done!");
-  pBLEScan->clearResults();   
-  delay(DELAY_SCAN_IN_SECONDS * 1000);
-}*/

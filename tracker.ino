@@ -1,20 +1,35 @@
 #include "WiFiManager.h"
+#include "BeaconManager.h"
 
-#define EAP_IDENTITY "ltalavera" 
-#define EAP_PASSWORD "4I6goj8X!!"
+/*const char* ssid = "Belatrix Globant Division";
+const char* identity = "ltalavera";
+const char* password = "4I6goj8X!!";*/
 
-const char* ssid = "Belatrix Globant Division";
+const char* ssid = "TALAVERA";
+const char* password = "29252217";
 
-//WiFiManager manager;
+const int durationInSeconds = 5;
+
+class BeaconsListener: public AdvertisedBeaconCallbacks {
+    void onResult(BLEAdvertisedDevice advertisedDevice) {
+      Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
+    }
+};
 
 void setup() {
   Serial.begin(9600);
+  while (!Serial);
 
   wifiManager.begin();
+  //wifiManager.connectEnterprise(ssid, identity, password);
+  wifiManager.connect(ssid, password);
+
+  beaconManager.begin(new BeaconsListener());
 }
 
 void loop() {
-  
+  beaconManager.scan(durationInSeconds);
+  delay(2000);
 }
 
 
@@ -62,58 +77,6 @@ const char* mqtt_server = "hornet.rmq.cloudamqp.com";
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-
-String translateEncryptionType(wifi_auth_mode_t encryptionType) {
-  switch (encryptionType) {
-    case (WIFI_AUTH_OPEN):
-      return "Open";
-    case (WIFI_AUTH_WEP):
-      return "WEP";
-    case (WIFI_AUTH_WPA_PSK):
-      return "WPA_PSK";
-    case (WIFI_AUTH_WPA2_PSK):
-      return "WPA2_PSK";
-    case (WIFI_AUTH_WPA_WPA2_PSK):
-      return "WPA_WPA2_PSK";
-    case (WIFI_AUTH_WPA2_ENTERPRISE):
-      return "WPA2_ENTERPRISE";
-  }
-}
-
-void scanNetworks() {
-  int numberOfNetworks = WiFi.scanNetworks();
- 
-  Serial.print("Number of networks found: ");
-  Serial.println(numberOfNetworks);
- 
-  for (int i = 0; i < numberOfNetworks; i++) {
-    Serial.print("Network name: ");
-    Serial.println(WiFi.SSID(i));
- 
-    Serial.print("Signal strength: ");
-    Serial.println(WiFi.RSSI(i));
- 
-    Serial.print("MAC address: ");
-    Serial.println(WiFi.BSSIDstr(i));
- 
-    Serial.print("Encryption type: ");
-    String encryptionTypeDescription = translateEncryptionType(WiFi.encryptionType(i));
-    Serial.println(encryptionTypeDescription);
-    Serial.println("-----------------------");
-  }
-}
-
-void connectToNetwork() { 
-  WiFi.begin(SSID, PASSWORD);
- 
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Establishing connection to WiFi..");
-  }
- 
-  Serial.println("Connected to network");
- 
-}
 
 void reconnect() {
   while (!client.connected()) {

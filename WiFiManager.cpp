@@ -45,4 +45,40 @@ String WiFiManager::translateEncryptionType(wifi_auth_mode_t encryptionType) {
   }
 }
 
+void WiFiManager::connect(const char* ssid, const char* password) {
+  WiFi.begin(ssid, password);
+  waitForConnection();
+}
+
+void WiFiManager::connectEnterprise(const char* ssid, const char* identity, const char* password) {
+  esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)identity, strlen(identity)); 
+  esp_wifi_sta_wpa2_ent_set_username((uint8_t *)identity, strlen(identity)); 
+  esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password)); 
+  esp_wpa2_config_t config = WPA2_CONFIG_INIT_DEFAULT(); 
+  esp_wifi_sta_wpa2_ent_enable(&config); 
+  
+  WiFi.begin(ssid); 
+  waitForConnection();
+}
+
+void WiFiManager::waitForConnection() {
+  Serial.print("Establishing connection to WiFi..");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+    
+    counter++;
+    if (counter >= TIMEOUT) {
+      Serial.println("");
+      ESP.restart();
+    }
+  }
+
+  Serial.println("");
+  Serial.println("Connected to network");
+  Serial.println("IP address set: ");
+  Serial.println(WiFi.localIP());
+}
+
 WiFiManager wifiManager;

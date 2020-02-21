@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map For WiFiManager
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+WiFiManager	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+scanNetworks 		KEYWORD2
+begin	 		KEYWORD2
+connect 		KEYWORD2
+connectEnterprise 	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

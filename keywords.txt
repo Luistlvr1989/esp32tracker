@@ -6,16 +6,24 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-WiFiManager	KEYWORD1
+WiFiManager	    KEYWORD1
+MQTTManager	    KEYWORD1
+BeaconManager	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-scanNetworks 		KEYWORD2
-begin	 		KEYWORD2
-connect 		KEYWORD2
-connectEnterprise 	KEYWORD2
+translateEncryptionType KEYWORD2
+waitForConnection 		KEYWORD2
+
+scanNetworks 		    KEYWORD2
+begin	 		        KEYWORD2
+connect 		        KEYWORD2
+connectEnterprise 	    KEYWORD2
+publish          	    KEYWORD2
+loop             	    KEYWORD2
+scan                    KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -10,6 +10,7 @@
 
 class WiFiManager {
 private:
+  char* ssid;
   int counter = 0;
   
   String translateEncryptionType(wifi_auth_mode_t);
@@ -24,6 +25,8 @@ public:
   void connect(const char*, const char*);
 
   void connectEnterprise(const char*, const char*, const char*);
+
+  void loop();
 };
 
 extern WiFiManager wifiManager;

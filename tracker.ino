@@ -6,8 +6,11 @@
 const char* WIFI_IDENTITY = "ltalavera";
 const char* WIFI_PASSWORD = "4I6goj8X!!";*/
 
-const char* WIFI_SSID = "TALAVERA";
-const char* WIFI_PASSWORD = "29252217";
+/*const char* WIFI_SSID = "TALAVERA";
+const char* WIFI_PASSWORD = "29252217";*/
+
+const char* WIFI_SSID = "AndroidAP";
+const char* WIFI_PASSWORD = "d4n12019";
 
 const int durationInSeconds = 5;
 
@@ -39,8 +42,9 @@ void setup() {
 }
 
 void loop() {
+  wifiManager.loop();
   mqttManager.loop();
-  
+
   beaconManager.scan(durationInSeconds);
   delay(2000);
 }

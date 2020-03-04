@@ -51,6 +51,8 @@ void WiFiManager::connect(const char* ssid, const char* password) {
 }
 
 void WiFiManager::connectEnterprise(const char* ssid, const char* identity, const char* password) {
+  this->ssid = (char*) ssid;
+  
   esp_wifi_sta_wpa2_ent_set_identity((uint8_t *)identity, strlen(identity)); 
   esp_wifi_sta_wpa2_ent_set_username((uint8_t *)identity, strlen(identity)); 
   esp_wifi_sta_wpa2_ent_set_password((uint8_t *)password, strlen(password)); 
@@ -75,10 +77,18 @@ void WiFiManager::waitForConnection() {
     }
   }
 
+  counter = 0;
   Serial.println("");
   Serial.println("Connected to network");
   Serial.println("IP address set: ");
   Serial.println(WiFi.localIP());
+}
+
+void WiFiManager::loop() {
+  if (WiFi.status() != WL_CONNECTED) { 
+    WiFi.begin(ssid);      
+    waitForConnection();
+  }
 }
 
 WiFiManager wifiManager;

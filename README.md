@@ -11,14 +11,28 @@ Just create a Config.h file similar to Config.h.example and add the required con
 Use the connectEnterprise method from the WiFiManager to connect to WPA/WPA2 Enterprise networks, otherwise use the connect method.
 
 ```cpp
-  wifiManager.connect(wifiSsid, wifiPassword);
-  wifiManager.connectEnterprise(wifiSsid, wifiIdentity, wifiPassword);
+  wifiManager.connect("ssid", "password");
+  wifiManager.connectEnterprise("ssid", "identity", "password");
 ```
-
-## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
 
 ## License
 [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/)
+
+```
+   Copyright (C) 2020 Luis Talavera Ríos
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
+
+### Contributing to Android MVVM Architecture
+Just make pull request!

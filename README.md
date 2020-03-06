@@ -18,5 +18,5 @@ Use the connectEnterprise method from the WiFiManager to connect to WPA/WPA2 Ent
 ## License
 [Apache 2.0](https://choosealicense.com/licenses/apache-2.0/)
 
-### Contributing to Android MVVM Architecture
+### Contributing to esp32tracker
 Just make pull request!

@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #define WIFI_SSID "";
+#define WIFI_IDENTITY "";
 #define WIFI_PASSWORD "";
 
 #define MQTT_SERVER "";

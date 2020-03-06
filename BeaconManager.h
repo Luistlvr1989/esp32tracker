@@ -11,7 +11,7 @@
 #define WINDOW 99
 
 struct AdvertisedBeaconCallbacks {
-  virtual void onResult(char* packet);
+  virtual void onResult(char*);
 };
 
 class BeaconManager {
@@ -23,6 +23,10 @@ public:
 
   void scan(uint32_t);
 
+  static bool isSupportedBeacon(std::string, int);
+
+  static bool isIBeacon(uint8_t*);
+  
   friend class BLEDevicesListener;
 };
 
